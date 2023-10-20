@@ -20,7 +20,7 @@ clock = pygame.time.Clock()
 
 # Базовый класс спрайта
 class Sprite(pygame.sprite.Sprite):
-    def __init__(self, x, y, w, h, speed, image, cd):
+    def __init__(self, x, y, w, h, velocity, image, cd):
         super().__init__()
         # Загрузка изображения
         self.image = pygame.image.load(image)
@@ -28,7 +28,7 @@ class Sprite(pygame.sprite.Sprite):
         # Хитбокс
         self.rect = self.image.get_rect(center = (x, y))
         # Скорость
-        self.speed = speed
+        self.velocity = velocity
         # КД на стрельбу
         self.cd = cd
         self.base_cd = cd
@@ -41,13 +41,13 @@ class Player(Sprite):
     def update(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_a] and self.rect.left > 0:
-            self.rect.centerx -= self.speed
+            self.rect.centerx -= self.velocity
         if keys[pygame.K_d] and self.rect.right < WIDTH:
-            self.rect.centerx += self.speed
+            self.rect.centerx += self.velocity
         if keys[pygame.K_w] and self.rect.top > 0:
-            self.rect.centery -= self.speed
+            self.rect.centery -= self.velocity
         if keys[pygame.K_s] and self.rect.bottom < HEIGHT:
-            self.rect.centery += self.speed
+            self.rect.centery += self.velocity
         if self.cd > 0:
             self.cd -= 1
         if keys[pygame.K_SPACE] and game.state == 'play':
@@ -59,21 +59,21 @@ class Player(Sprite):
 class Enemy(Sprite):
     def update(self):
         # Движение вниз
-        self.rect.centery += self.speed
+        self.rect.centery += self.velocity
         # Проверка выхода из кона
         if self.rect.top > HEIGHT:
             self.kill()
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, x, y, speed):
+    def __init__(self, x, y, velocity):
         super().__init__()
         self.image = pygame.Surface((3, 15))
         self.image.fill(RED)
         self.rect = self.image.get_rect(center = (x, y))
-        self.speed = speed
+        self.velocity = velocity
 
     def update(self):
-        self.rect.y += self.speed
+        self.rect.y += self.velocity
         if self.rect.top > HEIGHT or self.rect.bottom < 0:
             self.kill()
 
